@@ -27,11 +27,16 @@ app.add_middleware(
     allow_credentials=False,
 )
 
-app.include_router(auth.router, prefix=settings.API_V1_PREFIX, tags=["Autenticación"])
-app.include_router(actions.router, prefix=settings.API_V1_PREFIX, tags=["Operaciones"])
-app.include_router(crud.router, prefix=settings.API_V1_PREFIX, tags=["Recursos"])
+app.include_router(auth.router, prefix=settings.API_V1_PREFIX)
+app.include_router(actions.router, prefix=settings.API_V1_PREFIX)
+app.include_router(crud.router, prefix=settings.API_V1_PREFIX)
 
 
-@app.get("/health", tags=["Health"], summary="Estado de la API")
+@app.get(
+    "/health",
+    tags=["Health"],
+    summary="Health",
+    description="Estado de la API.",
+)
 def health_check() -> dict[str, str]:
     return {"status": "ok", "app": "TuristeaYa"}

@@ -87,7 +87,8 @@ def _auth_error_message(exc: Exception) -> str:
         202: {"description": "Cuenta creada; Supabase requiere confirmar el correo."},
         400: {"description": "Datos inválidos o cuenta existente."},
     },
-    summary="Registrar una cuenta",
+    summary="Register",
+    description="Registrar una cuenta de usuario en Supabase Auth.",
 )
 def register(
     payload: RegisterRequest,
@@ -145,7 +146,12 @@ def register(
     return _token_response(session, user)
 
 
-@router.post("/auth/login", response_model=TokenResponse, summary="Iniciar sesión")
+@router.post(
+    "/auth/login",
+    response_model=TokenResponse,
+    summary="Login",
+    description="Iniciar sesión con correo y contraseña.",
+)
 def login(payload: LoginRequest, db: Client = Depends(get_supabase_anon)) -> TokenResponse:
     try:
         result = db.auth.sign_in_with_password(
@@ -178,7 +184,12 @@ def login(payload: LoginRequest, db: Client = Depends(get_supabase_anon)) -> Tok
     return _token_response(session, user)
 
 
-@router.post("/auth/refresh", response_model=TokenResponse, summary="Renovar una sesión")
+@router.post(
+    "/auth/refresh",
+    response_model=TokenResponse,
+    summary="Refresh",
+    description="Renovar una sesión con el refresh token.",
+)
 def refresh_session(
     payload: RefreshRequest,
     db: Client = Depends(get_supabase_anon),
@@ -235,7 +246,8 @@ def _revoke_access_token(access_token: str) -> None:
     "/auth/logout",
     status_code=status.HTTP_204_NO_CONTENT,
     response_class=Response,
-    summary="Cerrar sesión",
+    summary="Logout",
+    description="Cerrar sesión revocando el token enviado en Authorization.",
 )
 def logout(
     payload: LogoutRequest | None = None,
@@ -264,7 +276,11 @@ def logout(
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@router.get("/me", summary="Obtener el perfil autenticado")
+@router.get(
+    "/me",
+    summary="Me",
+    description="Obtener el perfil autenticado a partir del JWT de Supabase.",
+)
 def get_me(
     authorization: str | None = Header(default=None, alias="Authorization"),
     db: Client = Depends(get_authenticated_supabase),
@@ -285,6 +301,9 @@ def get_me(
         profile_response = (
             db.table("profiles").select("*").eq("id", str(user.id)).maybe_single().execute()
         )
+        profile_data = (
+            getattr(profile_response, "data", None) if profile_response is not None else None
+        )
     except HTTPException:
         raise
     except Exception as exc:
@@ -295,9 +314,9 @@ def get_me(
             headers={"WWW-Authenticate": "Bearer"},
         ) from exc
 
-    if profile_response.data is None:
+    if profile_data is None:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="El perfil no está disponible o la cuenta no está activa.",
         )
-    return profile_response.data
+    return profile_data

@@ -10,6 +10,11 @@ class Settings(BaseSettings):
     SUPABASE_SERVICE_ROLE_KEY: SecretStr | None = None
     API_V1_PREFIX: str = "/api/v1"
     PROJECT_NAME: str = "TuristeaYa API"
+    # Mientras sea True, listar/consultar cualquier tabla sin JWT usa service
+    # role (RLS se omite) para poder probar todos los endpoints en Insomnia.
+    # Para producción/RLS real: poner False (los GET privados vuelven a 401 sin
+    # sesión). Escrituras siempre exigen JWT.
+    ALLOW_ANONYMOUS_LISTS: bool = True
 
     model_config = SettingsConfigDict(
         env_file=".env",

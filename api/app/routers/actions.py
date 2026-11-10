@@ -34,7 +34,14 @@ def _raise_rpc_error(exc: Exception) -> None:
     ) from exc
 
 
-@router.post("/promotions/{promotion_id}/redeem", summary="Canjear una promoción")
+@router.post(
+    "/promotions/{promotion_id}/redeem",
+    summary="Redeem",
+    description=(
+        "Canjear una promoción mediante el RPC atómico "
+        "redeem_coupon(promotion, request_key, purchase_amount)."
+    ),
+)
 def redeem_promotion(
     promotion_id: UUID,
     payload: RedeemCouponRequest,
@@ -56,7 +63,14 @@ def redeem_promotion(
         _raise_rpc_error(exc)
 
 
-@router.post("/experiences/{experience_id}/reserve", summary="Reservar una experiencia")
+@router.post(
+    "/experiences/{experience_id}/reserve",
+    summary="Reserve",
+    description=(
+        "Reservar una experiencia mediante el RPC atómico "
+        "book_experience(experience, people, request_key)."
+    ),
+)
 def reserve_experience(
     experience_id: UUID,
     payload: BookExperienceRequest,
