@@ -1,0 +1,61 @@
+# Variables de entorno y secretos (mantener las plantillas de ejemplo)
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Claves y credenciales locales
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+*credentials*.json
+service-account*.json
+*-service-account*.json
+firebase-adminsdk*.json
+
+# Python: entornos, bytecode y cachés
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.venv/
+venv/
+env/
+ENV/
+pip-wheel-metadata/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+
+# Artefactos de build y cobertura
+build/
+dist/
+*.egg-info/
+.coverage
+.coverage.*
+htmlcov/
+
+# Datos locales y volcados que no necesita Render
+/api/db.json
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+*.backup
+*.bak
+
+# Logs y archivos temporales
+*.log
+logs/
+*.swp
+*.swo
+*~
+
+# Archivos del sistema y editores
+.DS_Store
+Thumbs.db
+.idea/
