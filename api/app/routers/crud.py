@@ -24,9 +24,8 @@ reglas que este módulo hace невозмож omitir:
    - List/GET de CATÁLOGO usan ``get_public_read_supabase``: con JWT consultan
      como ese usuario y anónimos consultan con SERVICE ROLE, de modo que las
      políticas RLS que no incluyen a ``anon`` ya no vacían el catálogo.
-   - MODO PRUEBA (``ALLOW_ANONYMOUS_LISTS=true`` en .env): anónimos pueden
-     listar/CUALQUIER tabla con service role para probar todo en Insomnia;
-     desactiva la variable para restaurar el 401 en tablas privadas.
+   - Las tablas privadas siempre requieren JWT. No existe un modo de prueba que
+     exponga datos de cuentas mediante service role.
    - POST/PATCH/DELETE exigen JWT: RLS sigue decidiendo fila por fila.
 
 No existen filtros implícitos restrictivos (``published``/``status``/``hidden``)
@@ -84,12 +83,11 @@ class ResourceSpec:
     def read_db(self) -> Any:
         """Dependencia de lectura según el modo de la API.
 
-        Con ``ALLOW_ANONYMOUS_LISTS=True`` (modo prueba), consultar sin JWT usa
-        service role para TODAS las tablas. En False, solo el catálogo queda
-        abierto y las tablas privadas devuelven 401 sin sesión.
+        El catálogo puede leerse sin sesión mediante la credencial pública
+        configurada para lecturas públicas. Las entidades privadas siempre
+        exigen una sesión válida, incluso si queda una variable antigua de
+        modo de pruebas en el entorno.
         """
-        if get_settings().ALLOW_ANONYMOUS_LISTS:
-            return get_public_read_supabase
         return get_required_authenticated_supabase if self.private else get_public_read_supabase
 
 
