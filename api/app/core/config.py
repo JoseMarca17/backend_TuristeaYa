@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     SUPABASE_SERVICE_ROLE_KEY: SecretStr | None = None
     API_V1_PREFIX: str = "/api/v1"
     PROJECT_NAME: str = "TuristeaYa API"
+    SUPABASE_MEDIA_BUCKET: str = "turisteaya-media"
+    MEDIA_MAX_BYTES: int = 8 * 1024 * 1024
     # Se conserva para compatibilidad con entornos antiguos, pero el router ya
     # no permite que esta opción exponga tablas privadas sin JWT.
     ALLOW_ANONYMOUS_LISTS: bool = False

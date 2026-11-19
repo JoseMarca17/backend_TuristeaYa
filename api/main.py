@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import get_settings
-from app.routers import actions, auth, crud
+from app.routers import actions, auth, crud, media
 
 settings = get_settings()
 
@@ -30,6 +30,7 @@ app.add_middleware(
 app.include_router(auth.router, prefix=settings.API_V1_PREFIX)
 app.include_router(actions.router, prefix=settings.API_V1_PREFIX)
 app.include_router(crud.router, prefix=settings.API_V1_PREFIX)
+app.include_router(media.router, prefix=settings.API_V1_PREFIX, tags=["Medios"])
 
 
 @app.get(
